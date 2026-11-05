@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medicare | Doctors</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Arial,sans-serif}
+body{background:#f4f5fb;color:#292747}
+header{background:#302b65;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center}
+header a{color:white;text-decoration:none;background:#514a91;padding:9px 15px;border-radius:8px}
+main{max-width:1150px;margin:35px auto;padding:0 20px}
+.heading{margin-bottom:22px}h1{font-size:27px}.muted{color:#85849a;font-size:14px;margin-top:5px}
+.panel{background:white;padding:22px;border-radius:14px;box-shadow:0 5px 22px #28245c0c;margin-bottom:22px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:22px}
+.stat{background:white;padding:20px;border-radius:12px}.stat strong{display:block;font-size:27px;color:#6558c7;margin-top:8px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+input,select{padding:12px;border:1px solid #dedee9;border-radius:8px;outline:none;background:white}
+.toolbar input{flex:1;min-width:200px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+.card{border:1px solid #eee;border-radius:12px;padding:20px}
+.avatar{width:55px;height:55px;border-radius:50%;display:grid;place-items:center;background:#e9e7ff;color:#5145a9;font-size:21px;font-weight:bold;margin-bottom:14px}
+.card h3{font-size:17px;margin-bottom:5px}.specialty{color:#6558c7;font-size:13px;font-weight:600}
+.info{font-size:13px;color:#777;margin-top:13px;line-height:1.9}
+.status{display:inline-block;margin-top:14px;padding:6px 10px;border-radius:20px;font-size:12px}
+.available{background:#e4f7ed;color:#16834b}.busy{background:#fff0df;color:#a75d12}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:550px){.grid,.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h2>✚ Medicare Hospital</h2><a href="index.html">← Dashboard</a></header>
+<main>
+<div class="heading"><h1>Doctor Directory</h1><p class="muted">View hospital doctors, their specializations and availability.</p></div>
+<div class="stats">
+<div class="stat">Total Doctors<strong id="total">6</strong></div>
+<div class="stat">Available Now<strong id="available">4</strong></div>
+<div class="stat">Departments<strong id="departments">6</strong></div>
+</div>
+<section class="panel">
+<div class="toolbar">
+<input id="search" placeholder="Search doctor or specialization..." oninput="render()">
+<select id="department" onchange="render()">
+<option value="">All departments</option>
+<option>Cardiology</option><option>Neurology</option><option>Orthopedics</option><option>Dermatology</option><option>Pediatrics</option><option>General Medicine</option>
+</select>
+<select id="availability" onchange="render()">
+<option value="">All availability</option><option>Available</option><option>Busy</option>
+</select>
+</div>
+<div class="grid" id="doctorGrid"></div>
+</section>
+</main>
+<script>
+const doctors=[
+{id:"D101",name:"Dr. Ananya Rao",specialty:"Cardiologist",department:"Cardiology",experience:12,phone:"9876500001",email:"ananya@medicare.com",availability:"Available"},
+{id:"D102",name:"Dr. Rohan Mehta",specialty:"Neurologist",department:"Neurology",experience:9,phone:"9876500002",email:"rohan@medicare.com",availability:"Busy"},
+{id:"D103",name:"Dr. Neha Kapoor",specialty:"Orthopedic Surgeon",department:"Orthopedics",experience:15,phone:"9876500003",email:"neha@medicare.com",availability:"Available"},
+{id:"D104",name:"Dr. Vikram Shah",specialty:"Dermatologist",department:"Dermatology",experience:7,phone:"9876500004",email:"vikram@medicare.com",availability:"Available"},
+{id:"D105",name:"Dr. Isha Nair",specialty:"Pediatrician",department:"Pediatrics",experience:11,phone:"9876500005",email:"isha@medicare.com",availability:"Busy"},
+{id:"D106",name:"Dr. Karan Desai",specialty:"General Physician",department:"General Medicine",experience:6,phone:"9876500006",email:"karan@medicare.com",availability:"Available"}
+];
+function render(){
+let q=document.getElementById("search").value.toLowerCase();
+let dep=document.getElementById("department").value;
+let av=document.getElementById("availability").value;
+let list=doctors.filter(d=>(d.name+" "+d.specialty+" "+d.id).toLowerCase().includes(q)&&(!dep||d.department===dep)&&(!av||d.availability===av));
+document.getElementById("doctorGrid").innerHTML=list.map(d=>`
+<div class="card">
+<div class="avatar">${d.name.split(" ").slice(-1)[0][0]}</div>
+<h3>${d.name}</h3><div class="specialty">${d.specialty}</div>
+<div class="info">
+Doctor ID: ${d.id}<br>
+Department: ${d.department}<br>
+Experience: ${d.experience} years<br>
+Phone: ${d.phone}<br>
+Email: ${d.email}
+</div>
+<span class="status ${d.availability==="Available"?"available":"busy"}">${d.availability}</span>
+</div>`).join("")||"<p>No doctors match your search.</p>";
+document.getElementById("total").textContent=doctors.length;
+document.getElementById("available").textContent=doctors.filter(d=>d.availability==="Available").length;
+document.getElementById("departments").textContent=new Set(doctors.map(d=>d.department)).size;
+}
+render();
+</script>
+</body>
+</html>
