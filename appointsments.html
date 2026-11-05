@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medicare | Appointments</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Arial,sans-serif}
+body{background:#f4f5fb;color:#292747}
+header{background:#302b65;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center}
+header a{color:white;text-decoration:none;background:#514a91;padding:9px 15px;border-radius:8px}
+main{max-width:1150px;margin:35px auto;padding:0 20px}
+.heading{margin-bottom:22px}h1{font-size:27px}.muted{color:#85849a;font-size:14px;margin-top:5px}
+.panel{background:white;padding:22px;border-radius:14px;box-shadow:0 5px 22px #28245c0c;margin-bottom:22px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:22px}
+.stat{background:white;padding:20px;border-radius:12px}.stat strong{display:block;font-size:27px;color:#6558c7;margin-top:8px}
+form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{font-size:13px;color:#666;display:block;margin-bottom:6px}
+input,select{width:100%;padding:12px;border:1px solid #dedee9;border-radius:8px;outline:none;background:white}
+input:focus,select:focus{border-color:#6558c7}
+button{border:0;border-radius:8px;padding:11px 15px;cursor:pointer;font-weight:600}
+.primary{background:#6558c7;color:white}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.toolbar input{flex:1;min-width:200px}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{text-align:left;padding:14px 12px;border-bottom:1px solid #eee;font-size:14px}
+th{color:#77758b;background:#fafaff}
+.status{padding:6px 9px;border-radius:20px;font-size:12px}
+.Scheduled{background:#e9e7ff;color:#5145a9}.Completed{background:#e4f7ed;color:#16834b}.Cancelled{background:#ffe9e9;color:#c03939}
+.actions{display:flex;gap:6px;align-items:center}.actions select{width:auto;padding:7px;font-size:12px}
+#message{margin-top:12px;color:#16834b;font-size:14px}
+.full{grid-column:1/-1}
+@media(max-width:650px){.stats{grid-template-columns:1fr}form{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<header><h2>✚ Medicare Hospital</h2><a href="index.html">← Dashboard</a></header>
+<main>
+<div class="heading"><h1>Appointment Management</h1><p class="muted">Schedule and manage patient appointments.</p></div>
+<div class="stats">
+<div class="stat">Total Appointments<strong id="total">3</strong></div>
+<div class="stat">Scheduled<strong id="scheduled">2</strong></div>
+<div class="stat">Completed<strong id="completed">1</strong></div>
+</div>
+<section class="panel">
+<h3 style="margin-bottom:18px">Book an Appointment</h3>
+<form id="appointmentForm">
+<div><label>Patient Name</label><input id="patient" placeholder="Enter patient name" required></div>
+<div><label>Doctor</label><select id="doctor" required><option value="">Select doctor</option><option>Dr. Ananya Rao</option><option>Dr. Rohan Mehta</option><option>Dr. Neha Kapoor</option><option>Dr. Vikram Shah</option><option>Dr. Isha Nair</option><option>Dr. Karan Desai</option></select></div>
+<div><label>Appointment Date</label><input id="date" type="date" required></div>
+<div><label>Appointment Time</label><input id="time" type="time" required></div>
+<div><label>Department</label><select id="department" required><option value="">Select department</option><option>Cardiology</option><option>Neurology</option><option>Orthopedics</option><option>Dermatology</option><option>Pediatrics</option><option>General Medicine</option></select></div>
+<div><label>Reason for Visit</label><input id="reason" placeholder="e.g. Routine check-up" required></div>
+<div class="full"><button class="primary" type="submit">+ Schedule Appointment</button></div>
+</form>
+<p id="message"></p>
+</section>
+<section class="panel">
+<div class="toolbar">
+<input id="search" placeholder="Search patient, doctor or appointment ID..." oninput="render()">
+<select id="statusFilter" onchange="render()"><option value="">All statuses</option><option>Scheduled</option><option>Completed</option><option>Cancelled</option></select>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>Appointment ID</th><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Update Status</th></tr></thead>
+<tbody id="rows"></tbody>
+</table></div>
+</section>
+</main>
+<script>
+let appointments=[
+{id:"A2001",patient:"Rahul Sharma",doctor:"Dr. Ananya Rao",date:"2026-11-06",time:"10:00",department:"Cardiology",reason:"Heart check-up",status:"Scheduled"},
+{id:"A2002",patient:"Priya Mehta",doctor:"Dr. Neha Kapoor",date:"2026-11-05",time:"11:30",department:"Orthopedics",reason:"Knee pain",status:"Completed"},
+{id:"A2003",patient:"Aarav Patel",doctor:"Dr. Rohan Mehta",date:"2026-11-07",time:"14:00",department:"Neurology",reason:"Headache",status:"Scheduled"}
+];
+let nextId=2004;
+document.getElementById("date").min=new Date().toISOString().split("T")[0];
+function render(){
+let q=document.getElementById("search").value.toLowerCase();
+let f=document.getElementById("statusFilter").value;
+let list=appointments.filter(a=>(a.id+" "+a.patient+" "+a.doctor).toLowerCase().includes(q)&&(!f||a.status===f));
+document.getElementById("rows").innerHTML=list.map(a=>`
+<tr><td><b>${a.id}</b></td><td>${a.patient}</td><td>${a.doctor}</td><td>${a.date}</td><td>${a.time}</td>
+<td><span class="status ${a.status}">${a.status}</span></td>
+<td><div class="actions"><select onchange="updateStatus('${a.id}',this.value)">
+${["Scheduled","Completed","Cancelled"].map(s=>`<option ${a.status===s?"selected":""}>${s}</option>`).join("")}
+</select></div></td></tr>`).join("")||'<tr><td colspan="7">No appointments found.</td></tr>';
+document.getElementById("total").textContent=appointments.length;
+document.getElementById("scheduled").textContent=appointments.filter(a=>a.status==="Scheduled").length;
+document.getElementById("completed").textContent=appointments.filter(a=>a.status==="Completed").length;
+}
+function updateStatus(id,status){let a=appointments.find(x=>x.id===id);if(a){a.status=status;render();}}
+document.getElementById("appointmentForm").addEventListener("submit",e=>{
+e.preventDefault();
+let a={id:"A"+nextId++,patient:document.getElementById("patient").value.trim(),doctor:document.getElementById("doctor").value,date:document.getElementById("date").value,time:document.getElementById("time").value,department:document.getElementById("department").value,reason:document.getElementById("reason").value.trim(),status:"Scheduled"};
+appointments.push(a);e.target.reset();document.getElementById("message").textContent="Appointment "+a.id+" scheduled successfully.";render();
+});
+render();
+</script>
+</body>
+</html>
