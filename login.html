@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Medicare Hospital</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    background: #f4f6fb;
+}
+
+/* Left Section */
+.left-section {
+    width: 55%;
+    background: linear-gradient(135deg, #29245c, #5146a5);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 70px;
+    position: relative;
+    overflow: hidden;
+}
+
+.left-section::before,
+.left-section::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+}
+
+.left-section::before {
+    width: 400px;
+    height: 400px;
+    right: -100px;
+    top: -100px;
+}
+
+.left-section::after {
+    width: 300px;
+    height: 300px;
+    left: -100px;
+    bottom: -100px;
+}
+
+.brand {
+    font-size: 27px;
+    font-weight: 700;
+    margin-bottom: 65px;
+    z-index: 1;
+}
+
+.brand span {
+    color: #a9a0ff;
+}
+
+.left-section h1 {
+    font-size: 45px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    z-index: 1;
+}
+
+.left-section p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #d9d6f4;
+    max-width: 470px;
+    z-index: 1;
+}
+
+.hospital-icon {
+    font-size: 95px;
+    margin-top: 45px;
+    z-index: 1;
+}
+
+/* Right Section */
+.right-section {
+    width: 45%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 35px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    padding: 42px;
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(30,30,80,0.08);
+}
+
+.login-card h2 {
+    font-size: 29px;
+    color: #29245c;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 32px;
+}
+
+.form-group {
+    margin-bottom: 21px;
+}
+
+.form-group label {
+    display: block;
+    color: #444;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #dedee8;
+    border-radius: 9px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #6558c7;
+    box-shadow: 0 0 0 3px rgba(101,88,199,0.1);
+}
+
+.password-box {
+    position: relative;
+}
+
+.password-box input {
+    padding-right: 65px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #6558c7;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+.remember {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    color: #666;
+}
+
+.options a {
+    color: #6558c7;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    background: #6558c7;
+    border: none;
+    border-radius: 9px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background: #5145a9;
+    transform: translateY(-2px);
+}
+
+.message {
+    margin-top: 18px;
+    font-size: 13px;
+    text-align: center;
+    min-height: 20px;
+}
+
+.footer {
+    margin-top: 35px;
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+}
+
+/* Responsive */
+@media(max-width: 850px) {
+    .left-section {
+        display: none;
+    }
+
+    .right-section {
+        width: 100%;
+        min-height: 100vh;
+        padding: 20px;
+    }
+}
+
+@media(max-width: 450px) {
+    .login-card {
+        padding: 28px 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<section class="left-section">
+    <div class="brand">✚ Medi<span>Care</span></div>
+
+    <h1>Your Health,<br>Our Priority.</h1>
+
+    <p>
+        Welcome to the Medicare Hospital Management System.
+        Manage patients, appointments, doctors and hospital
+        operations through one secure platform.
+    </p>
+
+    <div class="hospital-icon">🏥</div>
+</section>
+
+<section class="right-section">
+    <div class="login-card">
+
+        <h2>Welcome Back!</h2>
+        <p class="subtitle">Please enter your details to sign in.</p>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <div class="password-box">
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        required
+                        minlength="6"
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        id="togglePassword"
+                    >
+                        SHOW
+                    </button>
+                </div>
+            </div>
+
+            <div class="options">
+                <label class="remember">
+                    <input type="checkbox" id="remember">
+                    Remember me
+                </label>
+
+                <a href="#" id="forgotPassword">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="login-btn">
+                Sign In →
+            </button>
+
+            <div class="message" id="message"></div>
+
+        </form>
+
+        <div class="footer">
+            © 2026 Medicare Hospital. All rights reserved.
+        </div>
+
+    </div>
+</section>
+
+<script>
+const loginForm = document.getElementById("loginForm");
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const message = document.getElementById("message");
+
+// Show / Hide Password
+togglePassword.addEventListener("click", function() {
+    const isPassword = passwordInput.type === "password";
+
+    passwordInput.type = isPassword ? "text" : "password";
+    togglePassword.textContent = isPassword ? "HIDE" : "SHOW";
+});
+
+// Demo Login Credentials
+const demoEmail = "admin@medicare.com";
+const demoPassword = "admin123";
+
+// Login Validation
+loginForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = passwordInput.value;
+
+    if (email === demoEmail && password === demoPassword) {
+        message.style.color = "green";
+        message.textContent = "Login successful! Redirecting...";
+
+        setTimeout(function() {
+            window.location.href = "index.html";
+        }, 1000);
+
+    } else {
+        message.style.color = "red";
+        message.textContent = "Invalid email or password.";
+    }
+});
+
+// Forgot Password
+document.getElementById("forgotPassword")
+    .addEventListener("click", function(event) {
+        event.preventDefault();
+        message.style.color = "#6558c7";
+        message.textContent = "Please contact your hospital administrator.";
+    });
+</script>
+
+</body>
+</html>
