@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medicare | Patients</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Arial,sans-serif}
+body{background:#f4f5fb;color:#292747}
+header{background:#302b65;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+header h2{font-size:23px}header a{color:white;text-decoration:none;background:#514a91;padding:9px 15px;border-radius:8px}
+main{max-width:1150px;margin:35px auto;padding:0 20px}
+.heading{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:22px}
+h1{font-size:27px}.muted{color:#85849a;font-size:14px;margin-top:5px}
+button{border:0;border-radius:8px;padding:11px 16px;cursor:pointer;font-weight:600}
+.primary{background:#6558c7;color:white}.danger{background:#ffe9e9;color:#c03939}
+input,select{padding:12px;border:1px solid #dedee9;border-radius:8px;outline:none;background:white}
+input:focus,select:focus{border-color:#6558c7}
+.panel{background:white;padding:22px;border-radius:14px;box-shadow:0 5px 22px #28245c0c;margin-bottom:22px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:22px}
+.stat{background:white;padding:20px;border-radius:12px}.stat strong{display:block;font-size:27px;color:#6558c7;margin-top:8px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}.toolbar input{flex:1;min-width:200px}
+table{width:100%;border-collapse:collapse;min-width:700px}
+th,td{text-align:left;padding:14px 12px;border-bottom:1px solid #eee;font-size:14px}
+th{color:#77758b;background:#fafaff}
+.table-wrap{overflow-x:auto}
+.badge{background:#e9e7ff;color:#5145a9;padding:5px 9px;border-radius:20px;font-size:12px}
+form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+form label{font-size:13px;color:#666;display:block;margin-bottom:6px}
+form input,form select{width:100%}
+form .full{grid-column:1/-1}
+.actions{display:flex;gap:7px}
+#message{margin-top:12px;color:#16834b;font-size:14px}
+@media(max-width:650px){.stats{grid-template-columns:1fr}.heading{align-items:flex-start}form{grid-template-columns:1fr}form .full{grid-column:auto}}
+</style>
+</head>
+<body>
+<header>
+<h2>✚ Medicare Hospital</h2>
+<a href="index.html">← Dashboard</a>
+</header>
+<main>
+<div class="heading">
+<div><h1>Patient Management</h1><p class="muted">Register and manage hospital patient records.</p></div>
+<button class="primary" onclick="document.getElementById('name').focus()">+ Add Patient</button>
+</div>
+
+<div class="stats">
+<div class="stat">Total Patients<strong id="total">3</strong></div>
+<div class="stat">Male Patients<strong id="male">2</strong></div>
+<div class="stat">Female Patients<strong id="female">1</strong></div>
+</div>
+
+<section class="panel">
+<h3 style="margin-bottom:18px">Register New Patient</h3>
+<form id="patientForm">
+<div><label>Full Name</label><input id="name" placeholder="Patient name" required></div>
+<div><label>Email Address</label><input id="email" type="email" placeholder="patient@email.com" required></div>
+<div><label>Age</label><input id="age" type="number" min="0" max="120" placeholder="Age" required></div>
+<div><label>Gender</label><select id="gender" required><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+<div><label>Phone Number</label><input id="phone" type="tel" placeholder="Phone number" required></div>
+<div><label>Blood Group</label><select id="blood" required><option value="">Select blood group</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+<div class="full"><label>Address</label><input id="address" placeholder="Patient address"></div>
+<div class="full"><button class="primary" type="submit">Register Patient</button></div>
+</form>
+<p id="message"></p>
+</section>
+
+<section class="panel">
+<div class="toolbar">
+<input id="search" placeholder="Search by name, patient ID or email..." oninput="render()">
+<select id="filter" onchange="render()"><option value="">All genders</option><option>Male</option><option>Female</option><option>Other</option></select>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Patient ID</th><th>Name</th><th>Age / Gender</th><th>Blood Group</th><th>Email</th><th>Actions</th></tr></thead>
+<tbody id="patientRows"></tbody>
+</table>
+</div>
+</section>
+</main>
+<script>
+let patients=[
+{id:"P1001",name:"Rahul Sharma",email:"rahul@example.com",age:34,gender:"Male",phone:"9876543210",blood:"O+",address:"Mumbai"},
+{id:"P1002",name:"Priya Mehta",email:"priya@example.com",age:28,gender:"Female",phone:"9876543211",blood:"B+",address:"Thane"},
+{id:"P1003",name:"Aarav Patel",email:"aarav@example.com",age:45,gender:"Male",phone:"9876543212",blood:"AB+",address:"Navi Mumbai"}
+];
+let nextId=1004;
+const $=id=>document.getElementById(id);
+function render(){
+let q=$("search").value.toLowerCase(),g=$("filter").value;
+let list=patients.filter(p=>(p.name+" "+p.id+" "+p.email).toLowerCase().includes(q)&&(!g||p.gender===g));
+$("patientRows").innerHTML=list.map(p=>`<tr>
+<td><b>${p.id}</b></td><td>${escapeHTML(p.name)}</td>
+<td>${p.age} / ${p.gender}</td><td><span class="badge">${p.blood}</span></td>
+<td>${escapeHTML(p.email)}</td>
+<td><div class="actions"><button class="danger" onclick="removePatient('${p.id}')">Delete</button></div></td>
+</tr>`).join("")||'<tr><td colspan="6">No patients found.</td></tr>';
+$("total").textContent=patients.length;
+$("male").textContent=patients.filter(p=>p.gender==="Male").length;
+$("female").textContent=patients.filter(p=>p.gender==="Female").length;
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function removePatient(id){
+if(confirm("Delete this patient record?")){patients=patients.filter(p=>p.id!==id);render();}
+}
+$("patientForm").addEventListener("submit",e=>{
+e.preventDefault();
+let p={id:"P"+nextId++,name:$("name").value.trim(),email:$("email").value.trim(),age:Number($("age").value),gender:$("gender").value,phone:$("phone").value.trim(),blood:$("blood").value,address:$("address").value.trim()};
+patients.push(p);e.target.reset();$("message").textContent="Patient registered successfully: "+p.id;render();
+});
+render();
+</script>
+</body>
+</html>
